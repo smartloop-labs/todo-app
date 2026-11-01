@@ -9,7 +9,7 @@ use crate::components::todo_list::TodoList;
 
 const STORAGE_KEY: &str = "modern-todo-app.todos";
 const NAME_STORAGE_KEY: &str = "modern-todo-app.name";
-const DEFAULT_NAME: &str = "Git Money";
+const DEFAULT_NAME: &str = "Git Monkey";
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct TodoItemData {

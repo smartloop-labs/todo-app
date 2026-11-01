@@ -1,4 +1,4 @@
-# Git Money
+# Git Monkey
 
 > A local-first todo app that turns GitHub issues and pull requests into a tracked, shippable list. Built two ways from the same project: a React/JSX frontend (the primary, Vite-served build) and a Yew/Rust frontend that compiles to WebAssembly. Both share the same component shapes, styles, and local-first behavior.
 

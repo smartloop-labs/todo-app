@@ -12,7 +12,7 @@ import './App.css'
 
 const STORAGE_KEY = 'modern-todo-app.v2'
 const NAME_STORAGE_KEY = 'modern-todo-app.name'
-const DEFAULT_NAME = 'Git Money'
+const DEFAULT_NAME = 'Git Monkey'
 const GITHUB_API = 'https://api.github.com'
 
 function loadTodos() {
