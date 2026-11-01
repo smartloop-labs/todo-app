@@ -1,0 +1,33 @@
+.brand-icon {
+  display: block;
+  border-radius: 14px;
+  filter: drop-shadow(0 6px 18px rgba(168, 85, 247, 0.35));
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    filter 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+}
+
+.brand-icon:hover {
+  transform: rotate(-6deg) scale(1.06);
+}
+
+.brand-mark {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.brand-mark:hover .brand-icon {
+  filter: drop-shadow(0 8px 26px rgba(236, 72, 153, 0.55));
+}
+
+@keyframes brand-pulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 6px 18px rgba(168, 85, 247, 0.35));
+  }
+  50% {
+    filter: drop-shadow(0 8px 28px rgba(236, 72, 153, 0.6));
+  }
+}

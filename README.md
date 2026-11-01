@@ -1,8 +1,6 @@
-# Tada List
+# Git Money
 
-> This project was generated using [docent](https://github.com/smartloop-ai/docent) and lives under the [smartloop-ai](https://github.com/smartloop-ai) organization.
-
-A small todo app built two ways from the same project: a React/JSX frontend (the primary, Vite-served build) and a Yew/Rust frontend that compiles to WebAssembly. Both share the same component shapes, styles, and local-first behavior.
+> A local-first todo app that turns GitHub issues and pull requests into a tracked, shippable list. Built two ways from the same project: a React/JSX frontend (the primary, Vite-served build) and a Yew/Rust frontend that compiles to WebAssembly. Both share the same component shapes, styles, and local-first behavior.
 
 ## Features
 

@@ -2,13 +2,14 @@ use gloo_storage::{LocalStorage, Storage};
 use serde::{Deserialize, Serialize};
 use yew::prelude::*;
 
+use crate::components::brand_icon::BrandIcon;
 use crate::components::editable_title::EditableTitle;
 use crate::components::github_link_input::GithubLinkInput;
 use crate::components::todo_list::TodoList;
 
 const STORAGE_KEY: &str = "modern-todo-app.todos";
 const NAME_STORAGE_KEY: &str = "modern-todo-app.name";
-const DEFAULT_NAME: &str = "Tada List";
+const DEFAULT_NAME: &str = "Git Money";
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct TodoItemData {
@@ -140,7 +141,10 @@ pub fn app() -> Html {
         <div class="app-shell">
             <div class="app-container">
                 <header class="app-header">
-                    <EditableTitle value={(*project_name).clone()} on_change={on_name_change} />
+                    <div class="brand-mark">
+                        <BrandIcon size={44} />
+                        <EditableTitle value={(*project_name).clone()} on_change={on_name_change} />
+                    </div>
                     <p class="app-subtitle">
                         { "Paste a GitHub issue or pull request link to add an item to your list." }
                     </p>

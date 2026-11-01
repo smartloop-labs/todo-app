@@ -7,11 +7,12 @@ import EditableTitle from './components/EditableTitle.jsx'
 import Composer from './components/Composer.jsx'
 import Footer from './components/Footer.jsx'
 import Welcome from './components/Welcome.jsx'
+import BrandIcon from './components/BrandIcon.jsx'
 import './App.css'
 
 const STORAGE_KEY = 'modern-todo-app.v2'
 const NAME_STORAGE_KEY = 'modern-todo-app.name'
-const DEFAULT_NAME = 'Tada List'
+const DEFAULT_NAME = 'Git Money'
 const GITHUB_API = 'https://api.github.com'
 
 function loadTodos() {
@@ -231,7 +232,10 @@ function App() {
       <div className="app-container">
         <header className="app-header">
           <div className="header-row">
-            <EditableTitle value={name} onChange={changeName} />
+            <div className="brand-mark">
+              <BrandIcon size={44} />
+              <EditableTitle value={name} onChange={changeName} />
+            </div>
             <ThemeToggle
               theme={theme}
               onToggle={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
