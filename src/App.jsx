@@ -13,6 +13,15 @@ const STORAGE_KEY = 'modern-todo-app.v2'
 const APP_TITLE = 'Git Monkey'
 const GITHUB_API = 'https://api.github.com'
 
+// Local-time YYYY-MM-DD. Using the local calendar day (not UTC) means a
+// task completed at 11pm shows up on today's bar, not tomorrow's.
+function dayKey(date) {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const d = String(date.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
+}
+
 function loadTodos() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
@@ -131,12 +140,15 @@ function App() {
       // Always create the task. If the API fetch failed (e.g. 404 for a
       // private or missing repo), still keep the link on `githubUrl` and
       // use the URL itself as the task text instead of dropping the entry.
+      // `completedAt` is only set for completions the user actually makes,
+      // not for already-closed issues pulled from GitHub.
       setTodos((prev) => [
         ...prev,
         {
           id: prev.reduce((max, t) => Math.max(max, t.id), 0) + 1,
           text: issue ? issue.text : text,
           completed: issue ? issue.completed : false,
+          completedAt: null,
           priority: priority || 'medium',
           dueDate: dueDate || null,
           githubUrl: issue ? issue.githubUrl : text,
@@ -158,6 +170,7 @@ function App() {
         id: prev.reduce((max, t) => Math.max(max, t.id), 0) + 1,
         text,
         completed: false,
+        completedAt: null,
         priority: priority || 'medium',
         dueDate: dueDate || null,
         isEditing: false,
@@ -175,7 +188,18 @@ function App() {
 
   const toggleTodo = (id) =>
     setTodos((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))
+      prev.map((t) => {
+        if (t.id !== id) return t
+        const willComplete = !t.completed
+        return {
+          ...t,
+          completed: willComplete,
+          // Stamp the day only when the user marks it complete. Unchecking
+          // clears the stamp so the line graph counts it under the day it
+          // was actually finished — and won't double-count it later.
+          completedAt: willComplete ? dayKey(new Date()) : null,
+        }
+      })
     )
 
   const toggleEdit = (id) => {
@@ -238,7 +262,12 @@ function App() {
         />
 
         {hasTodos && (
-          <TodoStats total={total} completed={completed} active={active} />
+          <TodoStats
+            todos={todos}
+            total={total}
+            completed={completed}
+            active={active}
+          />
         )}
 
         {hasTodos && (

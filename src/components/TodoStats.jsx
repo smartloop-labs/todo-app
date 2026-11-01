@@ -1,49 +1,166 @@
 import './TodoStats.css'
 
-function TodoStats({ total, completed, active }) {
-  const pct = total === 0 ? 0 : Math.round((completed / total) * 100)
-  const radius = 26
-  const circumference = 2 * Math.PI * radius
-  const offset = circumference - (pct / 100) * circumference
+const WINDOW_DAYS = 14
+
+function dayKey(date) {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const d = String(date.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
+}
+
+// Build a count-per-day series for the last `days` days (oldest -> newest).
+// Slots without a matching completion in `todos` stay at 0, so the line is
+// continuous across the whole window.
+function buildSeries(todos, days) {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const series = []
+  for (let i = 0; i < days; i++) {
+    const d = new Date(today)
+    d.setDate(today.getDate() - (days - 1 - i))
+    series.push({ date: d, key: dayKey(d), count: 0 })
+  }
+  const lookup = new Map(series.map((p) => [p.key, p]))
+  for (const todo of todos) {
+    if (!todo.completed || !todo.completedAt) continue
+    const slot = lookup.get(todo.completedAt)
+    if (slot) slot.count += 1
+  }
+  return series
+}
+
+function ProgressLineGraph({ series }) {
+  const width = 320
+  const height = 100
+  const padding = { top: 10, right: 14, bottom: 22, left: 26 }
+  const innerW = width - padding.left - padding.right
+  const innerH = height - padding.top - padding.bottom
+  const maxCount = Math.max(1, ...series.map((p) => p.count))
+  const stepX = series.length > 1 ? innerW / (series.length - 1) : 0
+
+  const points = series.map((p, i) => ({
+    ...p,
+    x: padding.left + i * stepX,
+    y: padding.top + innerH - (p.count / maxCount) * innerH,
+  }))
+
+  const linePath = points
+    .map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x.toFixed(2)} ${p.y.toFixed(2)}`)
+    .join(' ')
+  const areaPath =
+    points.length > 0
+      ? `${linePath} L ${points[points.length - 1].x.toFixed(2)} ${padding.top + innerH} L ${points[0].x.toFixed(2)} ${padding.top + innerH} Z`
+      : ''
+
+  const yTicks = [0, Math.ceil(maxCount / 2), maxCount]
+  const xLabelIndices =
+    series.length <= 4
+      ? series.map((_, i) => i)
+      : [0, Math.floor((series.length - 1) / 2), series.length - 1]
+
+  return (
+    <div className="progress-line-graph">
+      <svg
+        className="progress-line-svg"
+        width="100%"
+        height={height}
+        viewBox={`0 0 ${width} ${height}`}
+        preserveAspectRatio="xMidYMid meet"
+        role="img"
+        aria-label={`Tasks completed per day over the last ${WINDOW_DAYS} days`}
+      >
+        <defs>
+          <linearGradient id="progressLineGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#6366f1" stopOpacity="0.35" />
+            <stop offset="100%" stopColor="#6366f1" stopOpacity="0" />
+          </linearGradient>
+          <linearGradient id="progressLineStroke" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#6366f1" />
+            <stop offset="100%" stopColor="#a855f7" />
+          </linearGradient>
+        </defs>
+
+        {yTicks.map((tick, i) => {
+          const y = padding.top + innerH - (tick / maxCount) * innerH
+          return (
+            <g key={`y-${i}`}>
+              <line
+                x1={padding.left}
+                x2={padding.left + innerW}
+                y1={y}
+                y2={y}
+                className="grid-line"
+              />
+              <text
+                x={padding.left - 6}
+                y={y + 3}
+                className="axis-label"
+                textAnchor="end"
+              >
+                {tick}
+              </text>
+            </g>
+          )
+        })}
+
+        {areaPath && <path d={areaPath} className="area-fill" />}
+        {linePath && <path d={linePath} className="line-stroke" />}
+
+        {points.map((p, i) => (
+          <g key={`pt-${i}`}>
+            <circle cx={p.x} cy={p.y} r={3.25} className="line-point" />
+            {p.count > 0 && (
+              <text
+                x={p.x}
+                y={p.y - 7}
+                className="point-label"
+                textAnchor="middle"
+              >
+                {p.count}
+              </text>
+            )}
+          </g>
+        ))}
+
+        {xLabelIndices.map((i) => {
+          const p = points[i]
+          if (!p) return null
+          const label = p.date.toLocaleDateString(undefined, {
+            month: 'short',
+            day: 'numeric',
+          })
+          return (
+            <text
+              key={`x-${i}`}
+              x={p.x}
+              y={height - 6}
+              className="axis-label"
+              textAnchor="middle"
+            >
+              {label}
+            </text>
+          )
+        })}
+      </svg>
+    </div>
+  )
+}
+
+function TodoStats({ todos = [], total, completed, active }) {
+  const series = buildSeries(todos, WINDOW_DAYS)
+  const peak = series.reduce((max, p) => Math.max(max, p.count), 0)
 
   return (
     <div className="todo-stats">
-      <div className="progress-ring">
-        <svg width="68" height="68" viewBox="0 0 68 68">
-          <defs>
-            <linearGradient
-              id="statsProgressGradient"
-              x1="0"
-              y1="0"
-              x2="1"
-              y2="1"
-            >
-              <stop offset="0%" stopColor="#6366f1" />
-              <stop offset="100%" stopColor="#a855f7" />
-            </linearGradient>
-          </defs>
-          <circle
-            cx="34"
-            cy="34"
-            r={radius}
-            fill="none"
-            className="ring-track"
-          />
-          <circle
-            cx="34"
-            cy="34"
-            r={radius}
-            fill="none"
-            className="ring-fill"
-            strokeDasharray={circumference}
-            strokeDashoffset={offset}
-            transform="rotate(-90 34 34)"
-          />
-        </svg>
-        <span className="progress-label">
-          <span className="progress-number">{pct}</span>
-          <span className="progress-percent">%</span>
-        </span>
+      <div className="stats-graph">
+        <div className="stats-graph-head">
+          <span className="stats-graph-title">
+            {`Completions · last ${WINDOW_DAYS} days`}
+          </span>
+          <span className="stats-graph-peak">{`Peak ${peak}/day`}</span>
+        </div>
+        <ProgressLineGraph series={series} />
       </div>
 
       <div className="stats-list">

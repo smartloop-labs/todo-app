@@ -13,21 +13,56 @@ function Composer({
   fetchNotice,
   onAdd,
 }) {
+  // Enter (or Cmd/Ctrl+Enter) adds the task. Disabled while fetching.
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !fetching) onAdd()
+    if (fetching) return
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      onAdd()
+    }
   }
 
   return (
     <section className="composer">
-      <input
-        type="text"
-        className="composer-input"
-        placeholder="Paste a GitHub issue or pull request link to get started"
-        value={draft}
-        onChange={(e) => setDraft(e.target.value)}
-        onKeyDown={handleKeyDown}
-        disabled={fetching}
-      />
+      <div className={`composer-field ${fetching ? 'is-loading' : ''}`}>
+        <input
+          type="text"
+          className="composer-input"
+          placeholder="Paste a GitHub issue or pull request link to get started"
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={handleKeyDown}
+          disabled={fetching}
+        />
+        <button
+          type="button"
+          className="composer-add"
+          onClick={onAdd}
+          disabled={!draft.trim() || fetching}
+          aria-label="Add task"
+          title={fetching ? 'Fetching…' : 'Add task (⏎)'}
+        >
+          {fetching ? (
+            <span className="composer-add-label">Fetching…</span>
+          ) : (
+            <svg
+              className="composer-add-icon"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M20 5v6a4 4 0 0 1-4 4H4" />
+              <polyline points="9 10 4 15 9 20" />
+            </svg>
+          )}
+        </button>
+      </div>
       <div className="composer-options">
         <div className="priority-group" role="group" aria-label="Priority">
           {PRIORITIES.map((level) => (
@@ -51,14 +86,6 @@ function Composer({
           onChange={(e) => setDueDate(e.target.value)}
           aria-label="Due date"
         />
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={onAdd}
-          disabled={!draft.trim() || fetching}
-        >
-          {fetching ? 'Fetching…' : 'Add'}
-        </button>
       </div>
       {fetchNotice && (
         <p className="composer-notice" role="status">

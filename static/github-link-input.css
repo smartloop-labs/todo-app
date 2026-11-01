@@ -1,19 +1,163 @@
-/* github-link-input.css — styles for the GitHub link composer */
+/* github-link-input.css — styles for the GitHub link input + send button.
+   The input and the send button now live inside the same bordered field,
+   so the wrapper owns the focus ring and the button sits flush on the right.
+   Mirrors the React Composer side.
+*/
 
 .github-link-input {
-    margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.github-link-input .input-wrapper {
-    flex: 1;
+.composer-row {
+  display: flex;
+  align-items: stretch;
+  gap: 0.5rem;
 }
 
-.github-link-input .composer-row {
-    align-items: stretch;
+/* The field is a single bordered control that owns the focus ring. */
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+  padding: 0.35rem 0.35rem 0.35rem 0.9rem;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: var(--radius-sm, 8px);
+  background: var(--surface, #ffffff);
+  transition:
+    border-color var(--transition, 180ms cubic-bezier(0.4, 0, 0.2, 1)),
+    box-shadow var(--transition, 180ms cubic-bezier(0.4, 0, 0.2, 1));
 }
 
+.input-wrapper:focus-within {
+  outline: none;
+  border-color: var(--accent, #6366f1);
+  box-shadow: 0 0 0 3px var(--accent-soft, rgba(99, 102, 241, 0.2));
+}
+
+.input-wrapper.is-loading {
+  opacity: 0.95;
+}
+
+.input-icon {
+  position: static;
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-muted, #6b7280);
+  pointer-events: none;
+}
+
+/* The input is borderless and transparent — the wrapper owns the chrome. */
+.composer-input {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  padding: 0.25rem 0;
+  border: none;
+  background: transparent;
+  color: var(--text, #111827);
+  font: inherit;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.composer-input:disabled {
+  cursor: not-allowed;
+}
+
+/* Send button — sits flush on the right edge of the field. */
+.github-link-add {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 2.2rem;
+  height: 2.2rem;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: linear-gradient(
+    135deg,
+    var(--accent, #6366f1) 0%,
+    color-mix(in srgb, var(--accent, #6366f1) 55%, #ec4899) 100%
+  );
+  color: white;
+  cursor: pointer;
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transition:
+    transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 220ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity var(--transition, 180ms cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+.github-link-add:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.github-link-add-icon {
+  display: block;
+  position: relative;
+  z-index: 1;
+  transition: transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.1));
+}
+
+.github-link-add:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow:
+    0 6px 14px -4px color-mix(in srgb, var(--accent, #6366f1) 55%, transparent),
+    0 2px 6px -2px color-mix(in srgb, var(--accent, #6366f1) 35%, transparent);
+}
+
+.github-link-add:hover:not(:disabled) .github-link-add-icon {
+  transform: translateX(2px) scale(1.06);
+}
+
+.github-link-add:active:not(:disabled) {
+  transform: translateY(0) scale(0.94);
+  transition-duration: 90ms;
+}
+
+/* One-time shine sweep on hover. */
+.github-link-add::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 70%
+  );
+  transform: translateX(-120%);
+  transition: transform 700ms cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.github-link-add:hover:not(:disabled)::after {
+  transform: translateX(120%);
+}
+
+.github-link-add-label {
+  font-size: 0.8rem;
+  padding: 0 0.6rem;
+}
+
+/* ---------- Error ---------- */
 .github-link-error {
-    margin: 8px 2px 0;
-    font-size: 13px;
-    color: var(--danger);
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  background: rgba(239, 68, 68, 0.08);
+  color: #991b1b;
+  border: 1px solid #ef4444;
+  border-radius: var(--radius-sm, 8px);
+  font-size: 0.85rem;
 }

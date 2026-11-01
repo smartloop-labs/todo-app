@@ -201,9 +201,15 @@ pub fn github_link_input(props: &GithubLinkInputProps) -> Html {
         })
     };
 
+    // Enter (or Cmd/Ctrl+Enter) submits. Disabled while fetching so a
+    // double-tap can't fire two requests for the same URL.
     let on_keydown = {
         let submit = submit.clone();
+        let loading = loading.clone();
         Callback::from(move |e: KeyboardEvent| {
+            if *loading {
+                return;
+            }
             if e.key() == "Enter" {
                 e.prevent_default();
                 submit.emit(());
@@ -216,10 +222,47 @@ pub fn github_link_input(props: &GithubLinkInputProps) -> Html {
         Callback::from(move |_: MouseEvent| submit.emit(()))
     };
 
+    let button_title = if *loading {
+        "Fetching…"
+    } else {
+        "Add task (⏎)"
+    };
+
+    // Idle button: polished "return" arrow (⏎) with rounded caps and a touch
+    // more visual weight than the bare Feather glyph. While loading, fall
+    // back to text so users get an unambiguous status.
+    let button_content = if *loading {
+        html! { <span class="github-link-add-label">{ "Fetching…" }</span> }
+    } else {
+        html! {
+            <svg
+                class="github-link-add-icon"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+            >
+                <path d="M20 5v6a4 4 0 0 1-4 4H4"></path>
+                <polyline points="9 10 4 15 9 20"></polyline>
+            </svg>
+        }
+    };
+
+    let wrapper_class = if *loading {
+        "input-wrapper is-loading"
+    } else {
+        "input-wrapper"
+    };
+
     html! {
         <div class="github-link-input">
             <div class="composer-row">
-                <div class="input-wrapper">
+                <div class={wrapper_class}>
                     <span class="input-icon" aria-hidden="true">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
@@ -236,10 +279,16 @@ pub fn github_link_input(props: &GithubLinkInputProps) -> Html {
                         disabled={*loading}
                         aria-label="GitHub issue or pull request URL"
                     />
+                    <button
+                        class="github-link-add"
+                        onclick={on_add}
+                        disabled={*loading}
+                        title={button_title}
+                        aria-label="Add task"
+                    >
+                        { button_content }
+                    </button>
                 </div>
-                <button class="btn btn-primary" onclick={on_add} disabled={*loading}>
-                    { if *loading { "Fetching…" } else { "Add task" } }
-                </button>
             </div>
             if let Some(message) = &*error {
                 <p class="github-link-error" role="alert">{ message.clone() }</p>
