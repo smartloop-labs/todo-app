@@ -3,7 +3,6 @@ import TodoList from './components/TodoList.jsx'
 import TodoStats from './components/TodoStats.jsx'
 import ThemeToggle from './components/ThemeToggle.jsx'
 import Tabs from './components/Tabs.jsx'
-import EditableTitle from './components/EditableTitle.jsx'
 import Composer from './components/Composer.jsx'
 import Footer from './components/Footer.jsx'
 import Welcome from './components/Welcome.jsx'
@@ -11,8 +10,7 @@ import BrandIcon from './components/BrandIcon.jsx'
 import './App.css'
 
 const STORAGE_KEY = 'modern-todo-app.v2'
-const NAME_STORAGE_KEY = 'modern-todo-app.name'
-const DEFAULT_NAME = 'Git Monkey'
+const APP_TITLE = 'Git Monkey'
 const GITHUB_API = 'https://api.github.com'
 
 function loadTodos() {
@@ -37,14 +35,6 @@ function loadTheme() {
       : 'light'
   }
   return 'light'
-}
-
-function loadName() {
-  try {
-    const stored = localStorage.getItem(NAME_STORAGE_KEY)
-    if (typeof stored === 'string' && stored.trim()) return stored
-  } catch {}
-  return DEFAULT_NAME
 }
 
 function parseGithubUrl(raw) {
@@ -99,7 +89,6 @@ const FILTER_TABS = [
 function App() {
   const [todos, setTodos] = useState(loadTodos)
   const [theme, setTheme] = useState(loadTheme)
-  const [name, setName] = useState(loadName)
   const [filter, setFilter] = useState('all')
   const [draft, setDraft] = useState('')
   const [priority, setPriority] = useState('medium')
@@ -120,13 +109,6 @@ function App() {
     } catch {}
     document.documentElement.setAttribute('data-theme', theme)
   }, [theme])
-
-  const changeName = (text) => {
-    setName(text)
-    try {
-      localStorage.setItem(NAME_STORAGE_KEY, text)
-    } catch {}
-  }
 
   const addTodo = async () => {
     const text = draft.trim()
@@ -234,7 +216,7 @@ function App() {
           <div className="header-row">
             <div className="brand-mark">
               <BrandIcon size={44} />
-              <EditableTitle value={name} onChange={changeName} />
+              <h1 className="app-title">{APP_TITLE}</h1>
             </div>
             <ThemeToggle
               theme={theme}

@@ -3,13 +3,11 @@ use serde::{Deserialize, Serialize};
 use yew::prelude::*;
 
 use crate::components::brand_icon::BrandIcon;
-use crate::components::editable_title::EditableTitle;
 use crate::components::github_link_input::GithubLinkInput;
 use crate::components::todo_list::TodoList;
 
 const STORAGE_KEY: &str = "modern-todo-app.todos";
-const NAME_STORAGE_KEY: &str = "modern-todo-app.name";
-const DEFAULT_NAME: &str = "Git Monkey";
+const APP_TITLE: &str = "Git Monkey";
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct TodoItemData {
@@ -18,11 +16,6 @@ pub struct TodoItemData {
     pub completed: bool,
     // Added for GitHub link support
     pub github_url: Option<String>,
-}
-
-#[derive(Clone, Debug, PartialEq)]
-pub struct ProjectName {
-    pub text: String,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -47,11 +40,6 @@ pub fn app() -> Html {
     });
 
     let filter = use_state(|| Filter::All);
-
-    let project_name = use_state(|| ProjectName {
-        text: LocalStorage::get::<String>(NAME_STORAGE_KEY)
-            .unwrap_or_else(|_| DEFAULT_NAME.to_string()),
-    });
 
     // Persist the todo list whenever it changes.
     use_effect_with((*todos).clone(), |items: &Vec<TodoItemData>| {
@@ -100,14 +88,6 @@ pub fn app() -> Html {
         })
     };
 
-    let on_name_change = {
-        let project_name = project_name.clone();
-        Callback::from(move |name: ProjectName| {
-            let _ = LocalStorage::set(NAME_STORAGE_KEY, name.text.clone());
-            project_name.set(name);
-        })
-    };
-
     let on_filter_all = {
         let filter = filter.clone();
         Callback::from(move |_: MouseEvent| filter.set(Filter::All))
@@ -143,7 +123,7 @@ pub fn app() -> Html {
                 <header class="app-header">
                     <div class="brand-mark">
                         <BrandIcon size={44} />
-                        <EditableTitle value={(*project_name).clone()} on_change={on_name_change} />
+                        <h1 class="app-title">{ APP_TITLE }</h1>
                     </div>
                     <p class="app-subtitle">
                         { "Paste a GitHub issue or pull request link to add an item to your list." }

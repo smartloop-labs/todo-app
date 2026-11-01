@@ -9,7 +9,6 @@
 - Mark tasks complete, edit them inline, or delete them
 - Filter by **All / Active / Completed**
 - Light / dark theme (auto-detects `prefers-color-scheme`, persists choice)
-- Renameable project title (persisted)
 - Everything stored in `localStorage` — no backend, no accounts
 
 ## Project layout
