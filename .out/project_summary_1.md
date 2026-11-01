@@ -1,16 +1,10 @@
-Pushing the changes. No file edits are needed for this request — it's a git operation.
-
 ```sh
 git add -A
-git status --short
-git commit -m "Push changes"
-git push
-```
+git commit -m "Clean up .out summaries
 
-If this is the first push on the current branch and there's no upstream tracking yet, use this instead (the fallback block at the end handles setting the upstream automatically):
-
-```sh
-git push -u origin HEAD
+- Remove outdated project_summary_*.md snapshots
+- Refresh .out/project_summary.md with current state"
+git push origin main
 ```
 
 Co-Authored By: Smartloop AI
