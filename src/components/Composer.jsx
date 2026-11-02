@@ -1,6 +1,10 @@
 import './Composer.css'
 
-const PRIORITIES = ['low', 'medium', 'high']
+const PRIORITIES = [
+  { key: 'low', label: 'Low' },
+  { key: 'medium', label: 'Medium' },
+  { key: 'high', label: 'High' },
+]
 
 function Composer({
   draft,
@@ -65,17 +69,22 @@ function Composer({
       </div>
       <div className="composer-options">
         <div className="priority-group" role="group" aria-label="Priority">
-          {PRIORITIES.map((level) => (
+          {PRIORITIES.map((p) => (
             <button
-              key={level}
+              key={p.key}
               type="button"
-              className={`priority-chip priority-${level} ${
-                priority === level ? 'active' : ''
+              className={`priority-chip priority-${p.key} ${
+                priority === p.key ? 'active' : ''
               }`}
-              onClick={() => setPriority(level)}
+              onClick={() => setPriority(p.key)}
+              aria-pressed={priority === p.key}
             >
-              <span className="priority-dot" />
-              {level}
+              <span className="priority-bars" aria-hidden="true">
+                <span className="priority-bar" />
+                <span className="priority-bar" />
+                <span className="priority-bar" />
+              </span>
+              {p.label}
             </button>
           ))}
         </div>

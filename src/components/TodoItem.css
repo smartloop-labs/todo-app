@@ -1,105 +1,105 @@
-/* TodoItem.css — single task row + edit mode + actions
+/* TodoItem.css — individual todo row with checkbox, body, and actions
    Matches the structure in src/components/TodoItem.jsx:
-     <li class="todo-item [editing] [priority-x] [completed]"> ... </li>
+     <li class="todo-item [editing] [completed] priority-low|medium|high">
+       <button class="checkbox" />
+       <div class="todo-body">
+         <span class="todo-text" />
+         <div class="todo-meta">
+           <span class="priority-badge priority-low|medium|high" />
+           <span class="due-badge" />
+           <a class="github-meta-link" />
+         </div>
+       </div>
+       <div class="actions">
+         <button class="icon-btn" />
+         <button class="icon-btn danger" />
+       </div>
+     </li>
 */
-
-.todo-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
 
 .todo-item {
   display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1.1rem 1.25rem;
-  background: var(--surface, #ffffff);
-  border: 1px solid var(--border, #e5e7eb);
-  border-radius: var(--radius-md, 12px);
-  margin: 0;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px 12px 14px;
+  border-bottom: 1px solid var(--border);
+  border-left: 3px solid transparent;
   transition:
-    background-color var(--transition, 180ms cubic-bezier(0.4, 0, 0.2, 1)),
-    border-color var(--transition, 180ms cubic-bezier(0.4, 0, 0.2, 1)),
-    box-shadow var(--transition, 180ms cubic-bezier(0.4, 0, 0.2, 1));
-  list-style: none;
+    background-color 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+    border-left-color 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.todo-item:last-child {
+  border-bottom: none;
 }
 
 .todo-item:hover {
-  border-color: var(--border-strong, #d1d5db);
-  box-shadow: var(--shadow-sm, 0 1px 2px rgba(15, 23, 42, 0.04));
+  background: var(--surface-2);
 }
 
-.todo-item.editing {
-  border-color: var(--accent, #6366f1);
-  background: var(--accent-soft, rgba(99, 102, 241, 0.06));
-}
-
-.todo-item.priority-high {
-  border-left: 3px solid #ef4444;
+/* Priority-tinted left edge — same palette as the composer chips */
+.todo-item.priority-low {
+  border-left-color: #10b981;
 }
 .todo-item.priority-medium {
-  border-left: 3px solid #f59e0b;
+  border-left-color: #f59e0b;
 }
-.todo-item.priority-low {
-  border-left: 3px solid #10b981;
+.todo-item.priority-high {
+  border-left-color: #ef4444;
+}
+
+.todo-item.completed {
+  opacity: 0.6;
 }
 
 .todo-item.completed .todo-text {
   text-decoration: line-through;
-  color: var(--text-muted, #6b7280);
+  color: var(--text-muted);
 }
 
-/* Edit input */
-.todo-edit-input {
-  flex: 1;
-  padding: 0.65rem 0.85rem;
-  border: 1px solid var(--border, #e5e7eb);
-  border-radius: var(--radius-sm, 8px);
-  background: var(--surface, #ffffff);
-  color: var(--text, #111827);
-  font: inherit;
-  font-size: 0.95rem;
+.todo-item.editing {
+  background: var(--surface-2);
 }
 
-.todo-edit-input:focus {
-  outline: none;
-  border-color: var(--accent, #6366f1);
-  box-shadow: 0 0 0 3px var(--accent-soft, rgba(99, 102, 241, 0.2));
-}
-
-/* Checkbox */
+/* ---------- Checkbox ---------- */
 .checkbox {
   flex-shrink: 0;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  border: 2px solid var(--border-strong, #d1d5db);
-  background: var(--surface, #ffffff);
-  cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
-  color: #ffffff;
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: white;
+  cursor: pointer;
+  margin-top: 2px;
   transition:
-    background-color var(--transition, 180ms cubic-bezier(0.4, 0, 0.2, 1)),
-    border-color var(--transition, 180ms cubic-bezier(0.4, 0, 0.2, 1));
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.12s ease;
 }
 
 .checkbox:hover {
   border-color: var(--accent, #6366f1);
 }
 
-.checkbox.checked {
-  background: var(--success, #10b981);
-  border-color: var(--success, #10b981);
+.checkbox:active {
+  transform: scale(0.92);
 }
 
-/* Body (text + meta) */
+.checkbox.checked {
+  background: var(--accent, #6366f1);
+  border-color: var(--accent, #6366f1);
+}
+
+.checkbox:focus-visible {
+  outline: 2px solid var(--accent, #6366f1);
+  outline-offset: 2px;
+}
+
+/* ---------- Body (text + meta) ---------- */
 .todo-body {
   flex: 1;
   min-width: 0;
@@ -109,131 +109,183 @@
 }
 
 .todo-text {
-  font-size: 0.95rem;
-  line-height: 1.4;
-  color: var(--text, #111827);
-  cursor: pointer;
+  font-size: 14.5px;
+  font-weight: 500;
+  line-height: 1.45;
+  cursor: text;
+  color: var(--text);
   word-break: break-word;
-}
-
-.todo-text:hover {
-  color: var(--accent, #6366f1);
 }
 
 .todo-meta {
   display: flex;
-  align-items: center;
-  gap: 8px;
   flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
 }
 
-/* Priority badge */
+/* ---------- Priority badge ---------- */
 .priority-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 3px 10px;
   border-radius: 999px;
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.priority-badge .priority-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-}
-
-.priority-badge.priority-high {
-  background: rgba(239, 68, 68, 0.12);
-  color: #b91c1c;
-}
-.priority-badge.priority-high .priority-dot {
-  background: #ef4444;
-}
-
-.priority-badge.priority-medium {
-  background: rgba(245, 158, 11, 0.12);
-  color: #b45309;
-}
-.priority-badge.priority-medium .priority-dot {
-  background: #f59e0b;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  border: 1px solid transparent;
 }
 
 .priority-badge.priority-low {
   background: rgba(16, 185, 129, 0.12);
   color: #047857;
+  border-color: rgba(16, 185, 129, 0.3);
 }
-.priority-badge.priority-low .priority-dot {
-  background: #10b981;
+.priority-badge.priority-medium {
+  background: rgba(245, 158, 11, 0.12);
+  color: #b45309;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+.priority-badge.priority-high {
+  background: rgba(239, 68, 68, 0.12);
+  color: #b91c1c;
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
-/* Due-date badge */
+[data-theme="dark"] .priority-badge.priority-low {
+  background: rgba(16, 185, 129, 0.18);
+  color: #6ee7b7;
+  border-color: rgba(16, 185, 129, 0.35);
+}
+[data-theme="dark"] .priority-badge.priority-medium {
+  background: rgba(245, 158, 11, 0.18);
+  color: #fcd34d;
+  border-color: rgba(245, 158, 11, 0.35);
+}
+[data-theme="dark"] .priority-badge.priority-high {
+  background: rgba(239, 68, 68, 0.18);
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+/* Tiny stacked-bar marker inside the badge (matches the composer chips) */
+.priority-badge .priority-dot {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 1.5px;
+  height: 8px;
+  width: 10px;
+}
+
+.priority-badge .priority-dot::before,
+.priority-badge .priority-dot::after {
+  content: '';
+  width: 2px;
+  background: currentColor;
+  border-radius: 1px;
+  opacity: 0.85;
+}
+
+.priority-badge .priority-dot::before {
+  height: 4px;
+}
+.priority-badge .priority-dot::after {
+  height: 8px;
+}
+
+.priority-badge.priority-low .priority-dot::after {
+  display: none;
+}
+
+/* ---------- Due badge ---------- */
 .due-badge {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 3px 10px;
+  gap: 4px;
+  padding: 3px 9px;
   border-radius: 999px;
-  font-size: 11px;
-  font-weight: 600;
-  background: var(--surface-2, #eef0f6);
-  color: var(--text-muted, #6b7280);
+  font-size: 11.5px;
+  font-weight: 500;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
 }
 
 .due-badge.due-today {
   background: rgba(99, 102, 241, 0.12);
   color: var(--accent, #6366f1);
+  border-color: rgba(99, 102, 241, 0.3);
 }
 
 .due-badge.due-overdue {
   background: rgba(239, 68, 68, 0.12);
   color: #b91c1c;
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
-.due-badge.due-upcoming {
-  background: rgba(16, 185, 129, 0.12);
-  color: #047857;
+[data-theme="dark"] .due-badge.due-today {
+  background: rgba(99, 102, 241, 0.2);
+  color: #a5b4fc;
 }
 
-.due-badge svg {
-  flex-shrink: 0;
+[data-theme="dark"] .due-badge.due-overdue {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
 }
 
-/* GitHub link */
+/* ---------- GitHub link ---------- */
 .github-meta-link {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 3px 10px;
+  gap: 4px;
+  padding: 3px 9px;
   border-radius: 999px;
-  font-size: 11px;
-  font-weight: 600;
-  background: var(--surface-2, #eef0f6);
-  color: var(--text-muted, #6b7280);
+  font-size: 11.5px;
+  font-weight: 500;
+  background: var(--surface-2);
+  color: var(--text-muted);
   text-decoration: none;
+  border: 1px solid var(--border);
   transition:
-    background-color var(--transition, 180ms cubic-bezier(0.4, 0, 0.2, 1)),
-    color var(--transition, 180ms cubic-bezier(0.4, 0, 0.2, 1));
+    color 0.18s ease,
+    background-color 0.18s ease,
+    border-color 0.18s ease;
 }
 
 .github-meta-link:hover {
-  background: var(--accent-soft, rgba(99, 102, 241, 0.12));
-  color: var(--accent, #6366f1);
+  color: var(--text);
+  background: var(--surface);
+  border-color: var(--accent, #6366f1);
 }
 
-.github-meta-link svg {
-  flex-shrink: 0;
+/* ---------- Edit input (inline edit mode) ---------- */
+.todo-edit-input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 14.5px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
-/* Actions (edit + delete buttons) */
+.todo-edit-input:focus {
+  border-color: var(--accent, #6366f1);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+/* ---------- Actions ---------- */
 .actions {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
+  gap: 4px;
+  margin-left: auto;
 }
 
 .icon-btn {
@@ -242,20 +294,25 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  border-radius: var(--radius-sm, 8px);
-  border: 1px solid transparent;
+  padding: 0;
+  border: none;
   background: transparent;
-  color: var(--text-muted, #6b7280);
+  color: var(--text-muted);
+  border-radius: 8px;
   cursor: pointer;
   transition:
-    background-color var(--transition, 180ms cubic-bezier(0.4, 0, 0.2, 1)),
-    color var(--transition, 180ms cubic-bezier(0.4, 0, 0.2, 1)),
-    border-color var(--transition, 180ms cubic-bezier(0.4, 0, 0.2, 1));
+    background-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.12s ease;
 }
 
 .icon-btn:hover {
-  background: var(--surface-2, #eef0f6);
-  color: var(--text, #111827);
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.icon-btn:active {
+  transform: scale(0.92);
 }
 
 .icon-btn:focus-visible {
@@ -264,66 +321,53 @@
 }
 
 .icon-btn.danger:hover {
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(239, 68, 68, 0.12);
   color: #b91c1c;
 }
 
-/* Empty state (shown by TodoList when todos is empty) */
-.empty-state {
-  text-align: center;
-  padding: 48px 20px;
-  color: var(--text-muted, #6b7280);
+[data-theme="dark"] .icon-btn.danger:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
 }
 
-.empty-illustration {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 16px;
-  border-radius: 50%;
-  background: var(--accent-soft, rgba(99, 102, 241, 0.08));
-  color: var(--accent, #6366f1);
-}
-
-.empty-title {
-  margin: 0 0 6px;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text, #111827);
-}
-
-.empty-text {
-  margin: 0;
+/* ---------- Compact action buttons in the inline edit row ---------- */
+.btn {
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font: inherit;
   font-size: 13px;
-  color: var(--text-muted, #6b7280);
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    transform 0.12s ease;
 }
 
-/* Welcome screen (shown by App when there are no items) */
-.welcome-screen {
-  text-align: center;
-  padding: 48px 20px;
-  color: var(--text-muted, #6b7280);
+.btn:active {
+  transform: scale(0.97);
 }
 
-.welcome-text {
-  margin: 0;
-  font-size: 14px;
-  color: var(--text-muted, #6b7280);
+.btn-sm {
+  padding: 5px 10px;
+  font-size: 12.5px;
 }
 
-/* Responsive tweaks */
-@media (max-width: 480px) {
-  .todo-item {
-    padding: 0.95rem 1rem;
-    gap: 0.75rem;
-  }
-  .todo-meta {
-    gap: 6px;
-  }
-  .icon-btn {
-    width: 30px;
-    height: 30px;
-  }
+.btn-success {
+  background: var(--accent, #6366f1);
+  color: white;
+}
+
+.btn-success:hover {
+  background: color-mix(in srgb, var(--accent, #6366f1) 85%, black);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.btn-ghost:hover {
+  background: var(--surface-2);
+  color: var(--text);
 }

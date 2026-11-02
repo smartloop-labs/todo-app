@@ -48,10 +48,6 @@ function ProgressLineGraph({ series }) {
   const linePath = points
     .map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x.toFixed(2)} ${p.y.toFixed(2)}`)
     .join(' ')
-  const areaPath =
-    points.length > 0
-      ? `${linePath} L ${points[points.length - 1].x.toFixed(2)} ${padding.top + innerH} L ${points[0].x.toFixed(2)} ${padding.top + innerH} Z`
-      : ''
 
   const yTicks = [0, Math.ceil(maxCount / 2), maxCount]
   const xLabelIndices =
@@ -71,10 +67,6 @@ function ProgressLineGraph({ series }) {
         aria-label={`Tasks completed per day over the last ${WINDOW_DAYS} days`}
       >
         <defs>
-          <linearGradient id="progressLineGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#6366f1" stopOpacity="0.35" />
-            <stop offset="100%" stopColor="#6366f1" stopOpacity="0" />
-          </linearGradient>
           <linearGradient id="progressLineStroke" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stopColor="#6366f1" />
             <stop offset="100%" stopColor="#a855f7" />
@@ -104,24 +96,7 @@ function ProgressLineGraph({ series }) {
           )
         })}
 
-        {areaPath && <path d={areaPath} className="area-fill" />}
         {linePath && <path d={linePath} className="line-stroke" />}
-
-        {points.map((p, i) => (
-          <g key={`pt-${i}`}>
-            <circle cx={p.x} cy={p.y} r={3.25} className="line-point" />
-            {p.count > 0 && (
-              <text
-                x={p.x}
-                y={p.y - 7}
-                className="point-label"
-                textAnchor="middle"
-              >
-                {p.count}
-              </text>
-            )}
-          </g>
-        ))}
 
         {xLabelIndices.map((i) => {
           const p = points[i]
