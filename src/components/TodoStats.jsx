@@ -66,13 +66,6 @@ function ProgressLineGraph({ series }) {
         role="img"
         aria-label={`Tasks completed per day over the last ${WINDOW_DAYS} days`}
       >
-        <defs>
-          <linearGradient id="progressLineStroke" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#6366f1" />
-            <stop offset="100%" stopColor="#a855f7" />
-          </linearGradient>
-        </defs>
-
         {yTicks.map((tick, i) => {
           const y = padding.top + innerH - (tick / maxCount) * innerH
           return (
@@ -96,7 +89,18 @@ function ProgressLineGraph({ series }) {
           )
         })}
 
-        {linePath && <path d={linePath} className="line-stroke" />}
+        {linePath && (
+          <path
+            d={linePath}
+            className="line-stroke"
+            fill="none"
+            stroke="#6366f1"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{ stroke: '#6366f1', strokeWidth: 2 }}
+          />
+        )}
 
         {xLabelIndices.map((i) => {
           const p = points[i]
