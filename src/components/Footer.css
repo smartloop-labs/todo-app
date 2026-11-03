@@ -1,7 +1,8 @@
-/* Footer.css — list footer (count summary)
+/* Footer.css — list footer (count summary + "powered by" attribution)
    Matches the structure in src/components/Footer.jsx:
      <footer class="app-footer">
        <span class="footer-text">N of M shown</span>
+       <span class="powered-by">... <a>Smartloop</a></span>
      </footer>
 */
 
@@ -18,7 +19,28 @@
 
 .footer-text {
   color: var(--text-muted);
-  font-size: 13px;
+  font-size: 11px;
+}
+
+.powered-by {
+  color: var(--text-muted);
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.powered-by-link {
+  color: var(--text);
+  font-weight: 500;
+  text-decoration: none;
+  border-bottom: 1px dotted var(--border);
+  transition: color 120ms ease, border-color 120ms ease;
+}
+
+.powered-by-link:hover {
+  color: var(--accent, #6366f1);
+  border-bottom-color: var(--accent, #6366f1);
 }
 
 /* ---------- Footer stat pills (used by the Rust build footer) ---------- */
