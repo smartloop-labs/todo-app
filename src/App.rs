@@ -172,6 +172,10 @@ pub fn app() -> Html {
                         <span class="empty-text">
                             { format!("{} of {} shown", shown_count, total) }
                         </span>
+                        <span class="powered-by">
+                            { "Powered by " }
+                            <a class="powered-by-link" href="https://github.com/smartloop-ai" target="_blank" rel="noopener noreferrer">{ "Smartloop" }</a>
+                        </span>
                     </footer>
                 } else {
                     <div class="welcome-screen">

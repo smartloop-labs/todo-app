@@ -6,6 +6,17 @@ function Footer({ shown, total }) {
       <span className="footer-text">
         {shown} of {total} shown
       </span>
+      <span className="powered-by">
+        Powered by{' '}
+        <a
+          className="powered-by-link"
+          href="https://github.com/smartloop-ai"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Smartloop
+        </a>
+      </span>
     </footer>
   )
 }
